@@ -1,0 +1,35 @@
+#전달받은 인자의 총 개수
+int=$#
+
+#현재까지 검색결과를 저장할 문자열
+str=""
+
+if [ $# -eq 0 ]
+then
+    echo Usage:phone searchforp[...searchfor]
+    echo "(You didn't tell me what you want to search for)"
+fi
+
+#각 인자마다 받는 것들
+for arg in "$@"
+do
+    if [ $int -eq $# ]
+    then 
+        str=$(egrep -i "$arg" mydata.txt)
+    fi
+    
+    if [ -n "$str" ]
+    then
+        str=$(egrep -i "$str|$arg" mydata.txt)
+    fi
+
+    int=`expr $int - 1`
+    
+    if [ $int -eq 0 ]
+    then
+        if [ -n "$str" ]
+        then
+            egrep -i "$str" mydata.txt|awk -f display.awk
+        fi
+    fi
+done
